@@ -1,12 +1,12 @@
-from neurolab import net as n, tool, trans
+from neurolab import net as n, trans
 from Lab00 import generation_n_visualisation
-from numpy import random as r
+import matplotlib.pyplot as plt
+from numpy import random as r, array
 
-# Dataset 1. Exercises 1, 2, 3, 4
+# Dataset 1. Exercises 1, 2, 3, 4.
 P, T = generation_n_visualisation.noughts_n_crosses()
-# minmax - [0, 0,75]
-net = n.newff([[0, 1], [0, 1]], [6, 5, 1], [trans.HardLim()] * 3)
 
+net = n.newff([[0, 1], [0, 1]], [6, 5, 1], [trans.HardLim()] * 3)
 print(f"""Inputs: {net.ci},
 Outputs: {net.co},
 Layers: {len(net.layers)},
@@ -33,21 +33,40 @@ net.layers[1].np['b'] = [-1.5, -1.5, -.5, -.5, -.5]
 
 # Change weight of output (third) layer
 net.layers[2].np['w'] = [[1, 1, 1, 1, 1]]
-# [1], [1], [1], [1], [1]
 # Change bias of output (third) layer
 net.layers[2].np['b'] = [-0.5]
 
-print(net.layers[0].np)
-print(net.layers[1].np)
-print(net.layers[2].np)
-
 rnd_input = r.rand(10000, 2)
 sim = net.sim(rnd_input)
-print(rnd_input)
-print(sim)
 
 
-# Exercise 5
+def show_sim(dots, sim, title: str):
+    crosses = []
+    noughts = []
+
+    for it in range(len(sim)):
+        if sim[it] == 1:
+            crosses.append(dots[it])
+        elif sim[it] == 0:
+            noughts.append(dots[it])
+
+    crosses = array(crosses)
+    noughts = array(noughts)
+
+    if len(crosses) != 0:
+        plt.plot(crosses[:, 0], crosses[:, 1], 'r.')
+    if len(noughts) != 0:
+        plt.plot(noughts[:, 0], noughts[:, 1], 'b.')
+
+    plt.title(title)
+    plt.show()
+
+
+show_sim(rnd_input, sim, "")
+
+# Exercise 5.
+#   Try to solve the recognition problem by training 1-layer
+#   perceptron on the set of input examples. Analyze the result.
 net = n.newp([[0, 1], [0, 1]], 1)
 net.init()
 
@@ -57,3 +76,7 @@ print(net.trainf.__doc__)
 
 # print(f"""Train function: {net.trainf},
 # Error function w/ derivative: {net.errorf}""")
+
+# Self-added exercise 6.*
+#   Try to solve the recognition problem by training neuro-net
+#   on the set of input examples. Analyze the result.

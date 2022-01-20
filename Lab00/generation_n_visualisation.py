@@ -556,7 +556,6 @@ def plane_2_classes():
         c = np.array(c)
         d = np.array(d)
 
-        plt.title(title)
         if len(a) != 0:
             plt.plot(a[:, 0], a[:, 1], 'wo')
         if len(b) != 0:
@@ -566,6 +565,7 @@ def plane_2_classes():
         if len(d) != 0:
             plt.plot(d[:, 0], d[:, 1], 'ro')
 
+        plt.title(title)
         plt.show()
 
     # Здесь, мы можем запечатлить, то, что требовалось по шагу 4, задания 4, указывая выше в kf4, kf8,
