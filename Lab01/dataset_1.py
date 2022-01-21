@@ -68,15 +68,16 @@ show_sim(rnd_input, sim, "")
 #   Try to solve the recognition problem by training 1-layer
 #   perceptron on the set of input examples. Analyze the result.
 net = n.newp([[0, 1], [0, 1]], 1)
-net.init()
-
-error = net.train(P, T, epochs=1000, )
+# net.init()
+# error = net.train(P, T, epochs=16000, show=1000, goal=0.02, lr=0.02)
+error = net.train(P, T, epochs=500, show=100, goal=0.0001, lr=0.0001)
 print(error)
-print(net.trainf.__doc__)
 
-# print(f"""Train function: {net.trainf},
-# Error function w/ derivative: {net.errorf}""")
+print(f"""Train function: {net.trainf},
+Error function w/ derivative: {net.errorf}""")
 
 # Self-added exercise 6.*
 #   Try to solve the recognition problem by training neuro-net
 #   on the set of input examples. Analyze the result.
+
+print('end')
