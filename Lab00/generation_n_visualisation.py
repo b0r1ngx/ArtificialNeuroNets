@@ -40,22 +40,22 @@ def noughts_n_crosses():
          [0.75, 0.50],
          [0.75, 0.75]]
 
-    T = [0,
-         0,
-         1,
-         0,
-         1,
-         1,
-         1,
-         0,
-         1,
-         0,
-         1,
-         0,
-         0,
-         1,
-         0,
-         1]
+    T = [[0],
+         [0],
+         [1],
+         [0],
+         [1],
+         [1],
+         [1],
+         [0],
+         [1],
+         [0],
+         [1],
+         [0],
+         [0],
+         [1],
+         [0],
+         [1]]
 
     # Define function. Exercise 2
 
@@ -66,9 +66,9 @@ def noughts_n_crosses():
     def set_plot_marks(P, T):
         Marks = []
         for i in range(len(P)):
-            if T[i] == 1:
+            if T[i][0] == 1:
                 Marks.append(Rectangle(P[i], 0.25, 0.25, color="r"))
-            elif T[i] == 0:
+            elif T[i][0] == 0:
                 Marks.append(Rectangle(P[i], 0.25, 0.25, color="b"))
             else:
                 print("def set_plot_marks(P, T): Something from dataset (P, T) has not applicable format")
@@ -134,38 +134,38 @@ def boolean_function():
          [1, 1, 1, 1, 0],
          [1, 1, 1, 1, 1]]
 
-    T = [1,
-         1,
-         1,
-         0,
-         1,
-         0,
-         0,
-         0,
-         1,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         1,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         0,
-         1]
+    T = [[1],
+         [1],
+         [1],
+         [0],
+         [1],
+         [0],
+         [0],
+         [0],
+         [1],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [1],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [0],
+         [1]]
 
     return P, T
 
