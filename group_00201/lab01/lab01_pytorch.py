@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 
+from group_00201.AR2model import ar2_model
+
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 print(f"Used device: {device}")
 torch.device(device)
@@ -22,5 +24,4 @@ class TimeDelayNeuralNetwork(nn.Module):
 model = TimeDelayNeuralNetwork()
 print(model)
 
-def ARn():
-    pass
+print(ar2_model())

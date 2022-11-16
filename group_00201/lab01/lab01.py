@@ -38,7 +38,6 @@ for i in range(100):
     prepared_UV_x2 += UV_x2
     prepared_UV_x2 += reversed_UV
 
-
 data_size = len(prepared_temperatures_x1)
 print(data_size)
 
@@ -72,6 +71,45 @@ net = n.newff(
     [10, 10, 10, 1]  # contains the number of neurons for each layer, size of it number of layers, except input layer
 )
 
+# is that right, reset trans function
+net = n.newff(
+    [[0, 50], [0, 10]],  # list of list the outer list is the number of input neurons
+    [20, 1],  # contains the number of neurons for each layer, size of it number of layers, except input layer
+    [trans.HardLim()] * 2  # list of activation function for each layer
+)
+print(f"""Inputs: {net.ci},
+Outputs: {net.co},
+Layers: {len(net.layers)},
+Connection scheme of layers: {net.connect}""")
+
+# what is input to input data
+error = net.train(input_train, output_train, epochs=50, show=10, goal=0.0001)
+print(error)
+out_train = net.sim(input_train)
+
+print(out_train)
+
+out_test = net.sim(input_test)
+print(out_train)
+
+# second chance, try to implement this on practice lesson, yet not undrstand
+# is that right, reset trans function
+net = n.newff(
+    [[7, 30], [1, 9]],  # list of list the outer list is the number of input neurons, inner is min max for this input
+    [10, 1]  # contains the number of neurons for each layer, size of it number of layers, except input layer
+)
+net.init()
+print(f"""Inputs: {net.ci},
+Outputs: {net.co},
+Layers (include output): {len(net.layers)},
+Connection scheme of layers: {net.connect}""")
+
+# what is input to input data
+error = net.train(input_train, output_train, epochs=16000, show=1000, goal=0.00001)
+print('Error, after train: ', error)
+out_train = net.sim(input_test)
+print('', out_train)
+
 # net.init()
 print(f"""Inputs: {net.ci},
 Outputs: {net.co},
@@ -81,10 +119,12 @@ Connection scheme of layers: {net.connect}""")
 print(f"""Train function: {net.trainf},
 Error function w/ derivative: {net.errorf}""")
 
-
 # what is input to input data
 error = net.train(input_train, output_train, epochs=100, show=1, goal=1, rr=0.1)
 print('Error, after train: ', error)
 
 out_test = net.sim(input_test)
 print('out', out_test)
+
+# Verdict: I can't work with neurolab (Lib),
+# its totally not so good, or I'm so bad
