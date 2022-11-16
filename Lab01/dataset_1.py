@@ -6,7 +6,11 @@ from numpy import random as r, array
 # Dataset 1. Exercises 1, 2, 3, 4.
 P, T = generation_n_visualisation.noughts_n_crosses()
 
-net = n.newff([[0, 1], [0, 1]], [6, 5, 1], [trans.HardLim()] * 3)
+net = n.newff(
+    [[0, 1], [0, 1]],
+    [6, 5, 1],
+    [trans.HardLim()] * 3
+)
 print(f"""Inputs: {net.ci},
 Outputs: {net.co},
 Layers: {len(net.layers)},
@@ -67,14 +71,31 @@ show_sim(rnd_input, sim, "")
 # Exercise 5.
 #   Try to solve the recognition problem by training 1-layer
 #   perceptron on the set of input examples. Analyze the result.
-net = n.newp([[0, 1], [0, 1]], 1)
-# net.init()
-# error = net.train(P, T, epochs=16000, show=1000, goal=0.02, lr=0.02)
-error = net.train(P, T, epochs=500, show=100, goal=0.0001, lr=0.0001)
-print(error)
 
+# prepare data
+train_size = int(len(rnd_input) * 0.75)
+
+rnd_input_train, rnd_input_test = rnd_input[:train_size], rnd_input[train_size:]
+sim_train, sim_test = sim[:train_size], sim[train_size:]
+
+# net = n.newp(
+#     [[0, 1], [0, 1]],
+#     1
+# )
+net = n.newff(
+    [[0, 1], [0, 1]],  # list of list the outer list is the number of input neurons, inner is min max for this input
+    [6, 5, 1]  # contains the number of neurons for each layer, size of it number of layers, except input layer
+)
+net.init()
 print(f"""Train function: {net.trainf},
 Error function w/ derivative: {net.errorf}""")
+
+print('start train net')
+error = net.train(rnd_input_train, sim_train, epochs=20, show=1, goal=0.001, rr=0.01)
+print('Error, after train: ', error)
+
+out_train = net.sim(rnd_input_test)
+print(out_train)
 
 # Self-added exercise 6.*
 #   Try to solve the recognition problem by training neuro-net
