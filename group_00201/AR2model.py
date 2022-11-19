@@ -2,23 +2,19 @@ from random import gauss
 import matplotlib.pyplot as plt
 
 
-def ar2_model(initial=[20., 6.], a1=0.25, a2=0.75, n=12000, c=0, eps=1):
-    for _ in range(n - 3):
+def ar2_model(initial=[20., 6.], a1=0.25, a2=0.75, n=10000, const=0, eps=1):
+    cut = int(n / 10)
+    for _ in range(n + cut - len(initial)):
         initial.append(
-            c
+            const
             + a1 * initial[-1]
             + a2 * initial[-2]
             + eps * gauss(mu=0, sigma=1)
         )
-    cut = int(n/12)
-    return initial[cut:-cut]
+    return initial[cut:]
 
 
-def test_model():
-    data = ar2_model()
-    # print(data)
+def ar2_model_with_plt(initial=[20., 6.], a1=0.25, a2=0.75, n=10000, const=0, eps=1):
+    data = ar2_model(initial=initial, a1=a1, a2=a2, n=n, const=const, eps=eps)
     plt.plot(data)
-    plt.show()
-
-
-test_model()
+    return data
