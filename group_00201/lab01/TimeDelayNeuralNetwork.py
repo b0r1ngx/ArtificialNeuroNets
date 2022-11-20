@@ -11,11 +11,12 @@ class TimeDelayNeuralNetwork(nn.Module):
         self.architecture = nn.Sequential(
             nn.Linear(input_layer, neurons_first_layer),
             nn.ReLU(),  # nn.Threshold(0.5, 0)
-            # nn.Linear(neurons_first_layer, neurons_second_layer),
-            # nn.ReLU(),  # nn.Threshold(0.5, 0)
-            nn.Linear(neurons_second_layer, output_layer),
+            nn.Linear(neurons_first_layer, neurons_second_layer),
+            nn.ReLU(),  # nn.Threshold(0.5, 0)
+            nn.Linear(neurons_second_layer, output_layer)
             # nn.Softmax(dim=1)
         )
 
     def forward(self, x):
-        return self.architecture(x)
+        logits = self.architecture(x)
+        return logits

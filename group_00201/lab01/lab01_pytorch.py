@@ -34,6 +34,8 @@ loss_function = MSELoss()  # CrossEntropyLoss()
 learning_rate = 1e-5
 optimizer = torch.optim.SGD(time_delay_nn.parameters(), lr=learning_rate)
 
+prev_loss = 0
+
 
 def first_method():
     def train(data: list[list[Tensor]], model, loss_function, optimizer):
@@ -67,20 +69,15 @@ def first_method():
                 y, y_pred = d
                 pred = model(y)
                 test_loss += loss_fn(pred, y_pred).item()
-                c1 = pred.argmax(-1) == y_pred
-                print(c1)
-                c2 = c1.type(torch.float)
-                print(c2)
-                c3 = c2.sum()
-                print(c3)
-                correct += c3.item()
-        print(test_loss)
-        print(correct)
+                correct += (pred.argmax(0) == y).type(torch.float).sum().item()
         test_loss /= num_batches
         correct /= size
         print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+        global prev_loss
+        print(f"Avg loss win: {test_loss - prev_loss:>8f} \n")
+        prev_loss = test_loss
 
-    epochs = 2
+    epochs = 100
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train(train_data, time_delay_nn, loss_function, optimizer)
