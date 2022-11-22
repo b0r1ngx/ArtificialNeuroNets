@@ -20,10 +20,11 @@ def split_data(data, window_size=10, delay=0, predict_over=10):
 
 
 def train_test_split(data: list, train=0.8, test=0.2):
-    assert train + test == 1
     if train != 0.8:
-        train_size = int(len(data) * train)
+        test = 1 - train
     else:
-        train_size = int(len(data) * (1 - test))
+        train = 1 - test
 
+    assert train + test == 1
+    train_size = int(len(data) * train)
     return data[:train_size], data[train_size:]
