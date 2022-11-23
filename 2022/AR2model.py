@@ -20,3 +20,7 @@ def ar2_model_with_plt(initial=[20., 6.], a1=0.25, a2=0.75, n=10000, const=0, ep
     plt.plot(data)
     plt.show()
     return data
+
+#
+# for i in range(5):
+#     ar2_model_with_plt()

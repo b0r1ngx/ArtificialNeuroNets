@@ -1,11 +1,13 @@
 import torch
 from matplotlib import pyplot as plt
-from torch import Tensor, tensor
+from torch import Tensor
 from torch.nn import *
 
 from group_00201.AR2model import ar2_model_with_plt
 from group_00201.lab01.FeedForwardNeuralNetwork import FeedForwardNeuralNetwork
 from group_00201.utils import split_data, train_test_split
+
+# Report - https://docs.google.com/document/d/13QCUBmh3GJXVHs6OscQK25FowSgfTEXit2p0OctxYs8
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 print(f"Used device: {device}")
@@ -13,28 +15,30 @@ torch.device(device)
 
 input_size = 10
 
-time_delay_nn = FeedForwardNeuralNetwork(input_layer=input_size)
-print(time_delay_nn)
+feed_forward_nn = FeedForwardNeuralNetwork(input_layer=input_size)
+print(feed_forward_nn)
 
 window_sizes = (1, 10, 50, 100)
 delays = (0, 10, 100, 1000)
 
 # Generate Data
 data = ar2_model_with_plt(n=15000)
+other_test_data = ar2_model_with_plt(n=20000)
 print("Size of all data from ar2_model:", len(data))
 current_data = split_data(data, window_size=input_size)
+other_test_data = split_data(other_test_data, window_size=input_size, delay=10)
 
 size = len(current_data)
 batch_size = len(current_data[0][0])
 print("Size after split_data:", size)
 print("Batch size:", batch_size)
 
-train_data, test_data = train_test_split(current_data, train=0.5)
+train_data, test_data = train_test_split(current_data, train=0.7)
 print("Sizes of data, after train_test_split:", len(train_data), len(test_data))
 
 loss_function = MSELoss()
 learning_rate = 1e-6
-optimizer = torch.optim.SGD(time_delay_nn.parameters(), lr=learning_rate)
+optimizer = torch.optim.SGD(feed_forward_nn.parameters(), lr=learning_rate)
 
 prev_loss = 0
 
@@ -92,11 +96,11 @@ def test(data: list[list[Tensor]], model, loss_fn):
 
 epochs = 100
 for t in range(epochs):
-    _t = t + 1
-    print(f"Epoch {_t}\n-------------------------------")
-    plt.title(f'2.{_t} test difference')
-    train(train_data, time_delay_nn, loss_function, optimizer)
-    test(test_data, time_delay_nn, loss_function)
+    epoch = t + 1
+    print(f"Epoch {epoch}\n-------------------------------")
+    plt.title(f'2.{epoch} test difference')
+    train(train_data, feed_forward_nn, loss_function, optimizer)
+    test(test_data, feed_forward_nn, loss_function)
 
 print("Done!")
 
