@@ -3,19 +3,15 @@ from torch import tensor
 
 def split_data(data, window_size=10, delay=0, predict_over=10):
     result = []
-
     for i in range(len(data) - window_size - predict_over - delay):
         y_from, y_to = i, i + window_size
         y_predict = i + window_size + delay + predict_over
-
         # if you want to predict a range of values, add +1 to loop range, and use it:
         # y_predict_from, y_predict_to = i + window_size + delay, i + window_size + delay + predict_over
-
         result.append([
             tensor(data[y_from:y_to]),
             tensor([data[y_predict]])
         ])
-
     return result
 
 

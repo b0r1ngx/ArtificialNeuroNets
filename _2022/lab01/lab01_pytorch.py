@@ -3,9 +3,9 @@ from matplotlib import pyplot as plt
 from torch import Tensor
 from torch.nn import *
 
-from group_00201.AR2model import ar2_model_with_plt
-from group_00201.lab01.FeedForwardNeuralNetwork import FeedForwardNeuralNetwork
-from group_00201.utils import split_data, train_test_split
+from _2022.AR2model import ar2_model_with_plt
+from _2022.lab01.FeedForwardNeuralNetwork import FeedForwardNeuralNetwork
+from _2022.utils import split_data, train_test_split
 
 # Report - https://docs.google.com/document/d/13QCUBmh3GJXVHs6OscQK25FowSgfTEXit2p0OctxYs8
 
@@ -37,10 +37,8 @@ train_data, test_data = train_test_split(current_data, train=0.7)
 print("Sizes of data, after train_test_split:", len(train_data), len(test_data))
 
 loss_function = MSELoss()
-learning_rate = 1e-6
+learning_rate = 1e-4
 optimizer = torch.optim.SGD(feed_forward_nn.parameters(), lr=learning_rate)
-
-prev_loss = 0
 
 
 def train(data: list[list[Tensor]], model, loss_function, optimizer):
@@ -65,28 +63,30 @@ def train(data: list[list[Tensor]], model, loss_function, optimizer):
             print(f"loss: {loss:>7f} [{current:>5d} /{size:>5d}]")
 
 
+prev_loss = 0
+
+
 def test(data: list[list[Tensor]], model, loss_fn):
     size = len(data)
     num_batches = size / batch_size
     model.eval()
     test_loss, correct = 0, 0
-    corrs = []
-    preds = []
+    corrects, predictions = [], []
     with torch.no_grad():
         for d in data:
             y, y_pred = d
             pred = model(y)
             test_loss += loss_fn(pred, y_pred).item()
 
-            corrs.append(y_pred)
-            preds.append(pred)
+            corrects.append(y_pred)
+            predictions.append(pred)
 
     test_loss /= num_batches
     print(f"Global loss (for {size}): {test_loss:>8f}")
     print(f"Local loss: {test_loss / size:>8f}")
 
-    plt.plot(corrs, 'g')
-    plt.plot(preds, 'r')
+    plt.plot(corrects, 'g')
+    plt.plot(predictions, 'r')
     plt.legend(['correct', 'prediction'])
     plt.show()
     global prev_loss
