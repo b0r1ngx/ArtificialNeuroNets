@@ -1,7 +1,7 @@
 from torch import tensor
 
 
-def split_data(data, window_size=10, delay=0, predict_over=10):
+def prepare_data(data, window_size=10, delay=0, predict_over=10):
     result = []
     for i in range(len(data) - window_size - predict_over - delay):
         y_from, y_to = i, i + window_size
@@ -13,6 +13,12 @@ def split_data(data, window_size=10, delay=0, predict_over=10):
             tensor([data[y_predict]])
         ])
     return result
+
+
+def prepare_linear_data(data):
+    result = []
+    for i in data:
+        result.append()
 
 
 def train_test_split(data: list, train=0.8, test=0.2):

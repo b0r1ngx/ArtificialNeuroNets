@@ -3,9 +3,9 @@ from matplotlib import pyplot as plt
 from torch import Tensor
 from torch.nn import *
 
-from _2022.AR2model import ar2_model_with_plt
+from _2022.AR2model import generate_model_data_with_plt
 from _2022.lab01.FeedForwardNeuralNetwork import FeedForwardNeuralNetwork
-from _2022.utils import split_data, train_test_split
+from _2022.utils import prepare_data, train_test_split
 
 # Report - https://docs.google.com/document/d/13QCUBmh3GJXVHs6OscQK25FowSgfTEXit2p0OctxYs8
 
@@ -22,23 +22,23 @@ window_sizes = (1, 10, 50, 100)
 delays = (0, 10, 100, 1000)
 
 # Generate Data
-data = ar2_model_with_plt(n=15000)
-other_test_data = ar2_model_with_plt(n=20000)
+data = generate_model_data_with_plt(n=20000)
+# other_test_data = ar2_model_with_plt(n=20000)
 print("Size of all data from ar2_model:", len(data))
-current_data = split_data(data, window_size=input_size)
-other_test_data = split_data(other_test_data, window_size=input_size, delay=10)
+current_data = prepare_data(data, window_size=input_size)
+# other_test_data = split_data(other_test_data, window_size=input_size, delay=10)
 
 size = len(current_data)
 batch_size = len(current_data[0][0])
 print("Size after split_data:", size)
 print("Batch size:", batch_size)
 
-train_data, test_data = train_test_split(current_data, train=0.7)
+train_data, test_data = train_test_split(current_data, train=0.5)
 print("Sizes of data, after train_test_split:", len(train_data), len(test_data))
 
 loss_function = MSELoss()
-learning_rate = 1e-4
-optimizer = torch.optim.SGD(feed_forward_nn.parameters(), lr=learning_rate)
+learning_rate = 5e-6
+optimizer = torch.optim.Adam(feed_forward_nn.parameters(), lr=learning_rate)
 
 
 def train(data: list[list[Tensor]], model, loss_function, optimizer):
@@ -94,7 +94,7 @@ def test(data: list[list[Tensor]], model, loss_fn):
     prev_loss = test_loss
 
 
-epochs = 100
+epochs = 1000
 for t in range(epochs):
     epoch = t + 1
     print(f"Epoch {epoch}\n-------------------------------")
