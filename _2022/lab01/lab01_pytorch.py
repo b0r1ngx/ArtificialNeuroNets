@@ -38,7 +38,7 @@ print("Sizes of data, after train_test_split:", len(train_data), len(test_data))
 
 loss_function = MSELoss()
 learning_rate = 5e-6
-optimizer = torch.optim.Adam(feed_forward_nn.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adamax(feed_forward_nn.parameters(), lr=learning_rate)
 
 
 def train(data: list[list[Tensor]], model, loss_function, optimizer):
