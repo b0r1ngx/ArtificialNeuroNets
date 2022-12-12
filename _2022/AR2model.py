@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def ar2_model(
-        initial=[20., 6.], a1=0.25, a2=0.75,
+        initial=[20., 6.], a1=.25, a2=.75,
         n=10000, const=0, eps=1
 ) -> list[float]:
     cut = int(n / 10)
@@ -17,21 +17,22 @@ def ar2_model(
     return initial[cut:]
 
 
-def linear_model(k=2.0, const=0, n=10000):
-    y = [i for i in range(0, n)]
-    for i in range(len(y)):
-        y[i] = k * y[i] + const
+def linear_model(k=2., b=0, n=10000):
+    y = []
+    for x in range(n):
+        y.append(k * x + b)
     return y
 
 
-def generate_model_data_with_plt(initial=[20., 6.], a1=0.3, a2=0.7, n=10000, const=1, eps=1):
-    data = ar2_model(initial=initial, a1=a1, a2=a2, n=n, const=const, eps=eps)
-    # data = linear_model()
-    print(data)
+def generate_model_data_with_plt(
+        initial=[20., 6.], a1=.3, a2=.7, n=10000, const=0, eps=1
+):
+    data = ar2_model(initial, a1, a2, n, const, eps)
+    # print(data)
     plt.title('1. AR(2)-model')
     plt.plot(data)
     plt.show()
     return data
 
 
-# generate_model_data_with_plt()
+generate_model_data_with_plt()

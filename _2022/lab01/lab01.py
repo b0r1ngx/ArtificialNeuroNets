@@ -102,11 +102,4 @@ for t in range(epochs):
     train(train_data, feed_forward_nn, loss_function, optimizer)
     test(test_data, feed_forward_nn, loss_function)
 
-print("Done!")
-
-# The last linear layer of the neural network returns logits -
-# raw values in [-infty, infty] - which are passed to the nn.Softmax module.
-# The logits are scaled to values [0, 1] representing the model’s predicted
-# probabilities for each class. dim parameter indicates the dimension
-# along which the values must sum to 1.
-# pred_probab = softmax(out)
+print("We're done, check results!")
