@@ -18,10 +18,7 @@ def ar2_model(
 
 
 def linear_model(k=2., b=0, n=10000):
-    y = []
-    for x in range(n):
-        y.append(k * x + b)
-    return y
+    return [k * x + b for x in range(n)]
 
 
 def generate_model_data_with_plt(
@@ -35,4 +32,4 @@ def generate_model_data_with_plt(
     return data
 
 
-generate_model_data_with_plt()
+# generate_model_data_with_plt()
