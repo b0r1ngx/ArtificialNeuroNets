@@ -2,6 +2,7 @@ from torch import tensor
 from random import randrange
 
 
+# For Feed-forward networks:
 def prepare_data(data, window_size=10, delay=0, predict_over=10):
     result = []
     for i in range(len(data) - window_size - predict_over - delay):
@@ -27,6 +28,7 @@ def train_test_split(data: list, train=0.8, test=0.2):
     return data[:train_size], data[train_size:]
 
 
+# For Hopfield-based networks:
 def flat_data_between_minus_one_and_one(data, window, memory_capacity):
     """ Rule of transformation is:
         data = [0, 5, 3, 1]
