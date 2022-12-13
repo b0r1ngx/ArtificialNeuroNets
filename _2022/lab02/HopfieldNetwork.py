@@ -2,11 +2,12 @@ import numpy as np
 from matplotlib import cm, pyplot as plt
 
 
-class HopfieldNetwork():
+class HopfieldNetwork:
     """https://github.com/takyamamoto/Hopfield-Network"""
 
     def train_weights(self, train_data):
         print("Start to train weights...")
+        train_data = np.array(train_data)
         num_data = len(train_data)
         self.num_neuron = train_data[0].shape[0]
 
@@ -27,7 +28,8 @@ class HopfieldNetwork():
         self.W = W
 
     def predict(self, data, num_iter=20, threshold=0, asyn=False):
-        print("Start to predict...")
+        data = np.array(data)
+
         self.num_iter = num_iter
         self.threshold = threshold
         self.asyn = asyn
