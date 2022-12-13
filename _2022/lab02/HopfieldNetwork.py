@@ -41,10 +41,14 @@ class HopfieldNetwork:
         # Define predict list
         predicted = []
         for i in range(len(data)):
-            predicted.append(self._run(copied_data[i]))
+            predicted.append(
+                self.find_balance_cycles(
+                    copied_data[i]
+                )
+            )
         return predicted
 
-    def _run(self, init_s):
+    def find_balance_cycles(self, init_s):
         if self.asyn:
             # Compute initial state energy
             s = init_s
