@@ -9,10 +9,10 @@ def ar2_model(
     cut = int(n / 10)
     for _ in range(n + cut - len(initial)):
         initial.append(
-            const
-            + a1 * initial[-1]
-            + a2 * initial[-2]
-            + eps * gauss(mu=0, sigma=1)
+            round(const
+                  + a1 * initial[-1]
+                  + a2 * initial[-2]
+                  + eps * gauss(mu=0, sigma=1), 13)
         )
     return initial[cut:]
 
@@ -30,6 +30,5 @@ def generate_model_data_with_plt(
     plt.plot(data)
     plt.show()
     return data
-
 
 # generate_model_data_with_plt()

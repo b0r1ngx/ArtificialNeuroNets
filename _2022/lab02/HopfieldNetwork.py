@@ -3,9 +3,7 @@ from matplotlib import cm, pyplot as plt
 
 
 class HopfieldNetwork():
-    """
-    Source https://raw.githubusercontent.com/takyamamoto/Hopfield-Network/master/network.py
-    """
+    """https://github.com/takyamamoto/Hopfield-Network"""
 
     def train_weights(self, train_data):
         print("Start to train weights...")
