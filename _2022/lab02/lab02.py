@@ -8,7 +8,7 @@ from _2022.utils import prepare_data, flat_data_between_minus_one_and_one, \
 hopfield_nn = HopfieldNetwork()
 modes = [True, False]  # async, sync
 window_sizes = (10, 50, 100, 350, 1000)
-alphas = (.15, .3, .45, .6, .75, .9)
+invert_parts = (.15, .3, .45, .6, .75, .9)
 memory_capacity = (2, 5, 10, 35, 50, 100)
 
 # Generate Data
@@ -25,8 +25,8 @@ for window in window_sizes:
         )
 
 results = {}
-for alpha in alphas:
-    results[alpha] = []
+for part in invert_parts:
+    results[part] = []
 
 for data in datas:
     hopfield_nn.train_weights(data['flatten'])
@@ -34,9 +34,9 @@ for data in datas:
     hopfield_nn.plot_weights()
 
     for mode in modes:
-        for alpha in alphas:
+        for part in invert_parts:
             corrupted_data = [
-                randomly_invert_part_of_data(sequence, alpha)
+                randomly_invert_part_of_data(sequence, part)
                 for sequence in data['flatten']
             ]
             predictions = [hopfield_nn.predict([cd], asyn=mode)
@@ -48,18 +48,18 @@ for data in datas:
                     predictions[i][0], data['flatten'][i]
                 )
 
-            results[alpha].append({
+            results[part].append({
                 'asyn': mode,
                 'window': data['window'],
                 'memory_capacity': data['memory_capacity'],
                 'error': error,
             })
 
-for alpha in alphas:
+for part in invert_parts:
     table = PrettyTable()
-    table.title = f"Alpha = {alpha}"
+    table.title = f"Inverted data - {part*100}%"
     table.field_names = ['asyn', 'window', 'memory_capacity', 'error']
-    for res in results[alpha]:
+    for res in results[part]:
         table.add_row([res['asyn'], res['window'], res['memory_capacity'], res['error']])
 
     print(table)

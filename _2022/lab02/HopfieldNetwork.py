@@ -12,20 +12,21 @@ class HopfieldNetwork:
         self.num_neuron = train_data[0].shape[0]
 
         # initialize weights
-        W = np.zeros((self.num_neuron, self.num_neuron))
+        weights = np.zeros((self.num_neuron, self.num_neuron))
         rho = np.sum([np.sum(t) for t in train_data]) / (num_data * self.num_neuron)
 
         # Hebb rule
         for i in range(num_data):
             t = train_data[i] - rho
-            W += np.outer(t, t)
+            weights += np.outer(t, t)
 
-        # Make diagonal element of W into 0
-        diagW = np.diag(np.diag(W))
-        W = W - diagW
-        W /= num_data
+        # Make diagonal element of weights - 0,
+        # and finish on weights
+        diagonal_weights = np.diag(np.diag(weights))
+        weights = weights - diagonal_weights
+        weights /= num_data
 
-        self.W = W
+        self.weights = weights
 
     def predict(self, data, num_iter=20, threshold=0, asyn=False):
         data = np.array(data)
@@ -54,7 +55,7 @@ class HopfieldNetwork:
                     # Select random neuron
                     idx = np.random.randint(0, self.num_neuron)
                     # Update s
-                    s[idx] = np.sign(self.W[idx].T @ s - self.threshold)
+                    s[idx] = np.sign(self.weights[idx].T @ s - self.threshold)
 
                 # Compute new state energy
                 e_new = self.energy(s)
@@ -71,7 +72,7 @@ class HopfieldNetwork:
 
             for i in range(self.num_iter):
                 # Update s
-                s = np.sign(self.W @ s - self.threshold)
+                s = np.sign(self.weights @ s - self.threshold)
 
                 e_new = self.energy(s)
                 if e == e_new:
@@ -82,11 +83,11 @@ class HopfieldNetwork:
             return s
 
     def energy(self, s):
-        return -0.5 * s @ self.W @ s + np.sum(s * self.threshold)
+        return -0.5 * s @ self.weights @ s + np.sum(s * self.threshold)
 
     def plot_weights(self):
         plt.figure(figsize=(6, 5))
-        w_mat = plt.imshow(self.W, cmap=cm.coolwarm)
+        w_mat = plt.imshow(self.weights, cmap=cm.coolwarm)
         plt.colorbar(w_mat)
         plt.title("Network Weights")
         plt.tight_layout()

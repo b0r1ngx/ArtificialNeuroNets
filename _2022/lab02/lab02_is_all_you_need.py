@@ -8,7 +8,7 @@ from _2022.utils import prepare_data, flat_data_between_minus_one_and_one, \
 hopfield_nn = HopfieldNetwork()
 modes = [True, False]  # async, sync
 window_sizes = (10, 50, 100, 350, 1000)
-alphas = (.15, .3, .45, .6, .75, .9)
+invert_parts = (.15, .3, .45, .6, .75, .9)
 memory_capacity = (2, 5, 10, 35, 50, 100)
 
 # Generate Data
@@ -25,5 +25,5 @@ for window in window_sizes:
         )
 
 results = {}
-for alpha in alphas:
-    results[alpha] = []
+for part in invert_parts:
+    results[part] = []

@@ -1,14 +1,13 @@
 import numpy as np
 import torch
-from torch.autograd import Variable
 import matplotlib.pyplot as plt
 
 from _2022.lab03.SelfOrganizingMap import SelfOrganizingMap
 
-m = 20
-n = 30
+m = 10
+n = 10
 
-# Training inputs for RGBcolors
+# Training inputs for RGB colours (Total: 15 colours)
 colors = np.array(
     [[0., 0., 0.],
      [0., 0., 1.],
@@ -34,7 +33,7 @@ data = list()
 for i in range(colors.shape[0]):
     data.append(torch.FloatTensor(colors[i, :]))
 
-# Train a 20x30 SOM with 100 iterations
+# Train an m*n SOM with 100 iterations
 n_iter = 100
 som = SelfOrganizingMap(m, n, 3, n_iter)
 for iter_no in range(n_iter):
