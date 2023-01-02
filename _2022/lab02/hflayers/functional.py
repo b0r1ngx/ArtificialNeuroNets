@@ -1,8 +1,8 @@
-import torch
-import torch.nn as nn
-
-from torch import Tensor
 from typing import Optional, Tuple, Union
+
+import torch
+import warnings
+from torch import Tensor, nn
 
 
 def hopfield_core_forward(query,                           # type: Tensor

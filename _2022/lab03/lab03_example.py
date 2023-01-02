@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 from _2022.lab03.SelfOrganizingMap import SelfOrganizingMap
 
-m = 10
-n = 10
+m = 30
+n = 30
 
 # Training inputs for RGB colours (Total: 15 colours)
 colors = np.array(

@@ -457,7 +457,7 @@ class HopfieldPooling(Module):
             disable_out_projection=disable_out_projection)
         self._quantity = quantity
         pooling_weight_size = self.hopfield.hidden_size if state_pattern_as_static else self.hopfield.input_size
-        self.pooling_weights = nn.Parameter(torch.empty(size=(*(
+        self.pooling_weights = Parameter(torch.empty(size=(*(
             (1, quantity) if batch_first else (quantity, 1)
         ), input_size if pooling_weight_size is None else pooling_weight_size)), requires_grad=trainable)
         self.reset_parameters()
@@ -729,14 +729,14 @@ class HopfieldLayer(Module):
             disable_out_projection=disable_out_projection)
         self._quantity = quantity
         lookup_weight_size = self.hopfield.hidden_size if stored_pattern_as_static else self.hopfield.stored_pattern_dim
-        self.lookup_weights = nn.Parameter(torch.empty(size=(*(
+        self.lookup_weights = Parameter(torch.empty(size=(*(
             (1, quantity) if batch_first else (quantity, 1)
         ), input_size if lookup_weight_size is None else lookup_weight_size)), requires_grad=trainable)
 
         if lookup_weights_as_separated:
             target_weight_size = self.lookup_weights.shape[
                 2] if pattern_projection_size is None else pattern_projection_size
-            self.target_weights = nn.Parameter(torch.empty(size=(*(
+            self.target_weights = Parameter(torch.empty(size=(*(
                 (1, quantity) if batch_first else (quantity, 1)
             ), target_weight_size)), requires_grad=lookup_targets_as_trainable)
         else:

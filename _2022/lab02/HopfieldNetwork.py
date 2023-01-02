@@ -8,15 +8,15 @@ class HopfieldNetwork:
     def train_weights(self, train_data):
         print("Start to train weights...")
         train_data = np.array(train_data)
-        num_data = len(train_data)
-        self.num_neuron = train_data[0].shape[0]
+        data_size = len(train_data)
+        self.neurons = train_data[0].shape[0]
 
         # initialize weights
-        weights = np.zeros((self.num_neuron, self.num_neuron))
-        rho = np.sum([np.sum(t) for t in train_data]) / (num_data * self.num_neuron)
+        weights = np.zeros((self.neurons, self.neurons))
+        rho = np.sum([np.sum(t) for t in train_data]) / (data_size * self.neurons)
 
         # Hebb rule
-        for i in range(num_data):
+        for i in range(data_size):
             t = train_data[i] - rho
             weights += np.outer(t, t)
 
@@ -24,16 +24,16 @@ class HopfieldNetwork:
         # and finish on weights
         diagonal_weights = np.diag(np.diag(weights))
         weights = weights - diagonal_weights
-        weights /= num_data
+        weights /= data_size
 
         self.weights = weights
 
-    def predict(self, data, num_iter=20, threshold=0, asyn=False):
+    def predict(self, data, iterations_limit=20, bias=0, sync=True):
         data = np.array(data)
 
-        self.num_iter = num_iter
-        self.threshold = threshold
-        self.asyn = asyn
+        self.iterations_limit = iterations_limit
+        self.bias = bias
+        self.sync = sync
 
         # Copy to avoid call by reference
         copied_data = np.copy(data)
@@ -48,46 +48,45 @@ class HopfieldNetwork:
             )
         return predicted
 
-    def find_balance_cycles(self, init_s):
-        if self.asyn:
+    def find_balance_cycles(self, start_state):
+        if self.sync:
             # Compute initial state energy
-            s = init_s
-            e = self.energy(s)
+            state = start_state
+            energy = self.energy(state)
 
-            for i in range(self.num_iter):
-                for j in range(100):
-                    # Select random neuron
-                    idx = np.random.randint(0, self.num_neuron)
-                    # Update s
-                    s[idx] = np.sign(self.weights[idx].T @ s - self.threshold)
+            for i in range(self.iterations_limit):
+                # Update state
+                state = np.sign(self.weights @ state - self.bias)
 
                 # Compute new state energy
-                e_new = self.energy(s)
-                # s is converged
-                if e == e_new:
-                    return s
-                # Update energy
-                e = e_new
+                new_energy = self.energy(state)
+                if energy == new_energy:
+                    return state
 
-            return s
+                energy = new_energy
+
+            return state
         else:
-            s = init_s
-            e = self.energy(s)
+            state = start_state
+            energy = self.energy(state)
 
-            for i in range(self.num_iter):
-                # Update s
-                s = np.sign(self.weights @ s - self.threshold)
+            for i in range(self.iterations_limit):
+                for j in range(100):
+                    # Select random neuron
+                    idx = np.random.randint(0, self.neurons)
+                    # Update state
+                    state[idx] = np.sign(self.weights[idx].T @ state - self.bias)
 
-                e_new = self.energy(s)
-                if e == e_new:
-                    return s
+                new_energy = self.energy(state)
+                if energy == new_energy:
+                    return state
 
-                e = e_new
+                energy = new_energy
 
-            return s
+            return state
 
-    def energy(self, s):
-        return -0.5 * s @ self.weights @ s + np.sum(s * self.threshold)
+    def energy(self, state):
+        return -.5 * state @ self.weights @ state + np.sum(state * self.bias)
 
     def plot_weights(self):
         plt.figure(figsize=(6, 5))

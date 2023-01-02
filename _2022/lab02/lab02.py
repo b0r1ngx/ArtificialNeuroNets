@@ -6,7 +6,7 @@ from _2022.utils import prepare_data, flat_data_between_minus_one_and_one, \
     randomly_invert_part_of_data, get_amount_of_difference_between_iterable
 
 hopfield_nn = HopfieldNetwork()
-modes = [True, False]  # async, sync
+modes = [True, False]  # sync, async
 window_sizes = (10, 50, 100, 350, 1000)
 invert_parts = (.15, .3, .45, .6, .75, .9)
 memory_capacity = (2, 5, 10, 35, 50, 100)
@@ -39,8 +39,10 @@ for data in datas:
                 randomly_invert_part_of_data(sequence, part)
                 for sequence in data['flatten']
             ]
-            predictions = [hopfield_nn.predict([cd], asyn=mode)
-                           for cd in corrupted_data]
+            predictions = [
+                hopfield_nn.predict([cd], sync=mode)
+                for cd in corrupted_data
+            ]
 
             error = 0
             for i in range(len(predictions)):
@@ -57,7 +59,7 @@ for data in datas:
 
 for part in invert_parts:
     table = PrettyTable()
-    table.title = f"Inverted data - {part*100}%"
+    table.title = f"Inverted data - {part * 100}%"
     table.field_names = ['asyn', 'window', 'memory_capacity', 'error']
     for res in results[part]:
         table.add_row([res['asyn'], res['window'], res['memory_capacity'], res['error']])

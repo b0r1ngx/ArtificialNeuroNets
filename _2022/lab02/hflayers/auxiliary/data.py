@@ -1,8 +1,8 @@
-import torch
-
 from math import ceil
+from typing import Dict, Tuple
+
+import torch
 from torch.utils.data import Dataset
-from typing import Dict, Optional, Sequence, Tuple, Union
 
 
 class BitPatternSet(Dataset):
@@ -100,8 +100,8 @@ class BitPatternSet(Dataset):
         # Check invalid (all-zero and signal) instances and re-sample them.
         check_instances = True
         while check_instances:
-            invalid_instances = (generated_data.sum(axis=2) == 0).logical_or(
-                torch.sum(torch.stack([(generated_data == _).all(axis=2) for _ in generated_signals]), axis=0))
+            invalid_instances = (generated_data.sum(dim=2) == 0).logical_or(
+                torch.sum(torch.stack([(generated_data == _).all(dim=2) for _ in generated_signals]), dim=0))
             if invalid_instances.sum() > 0:
                 generated_data[invalid_instances] = torch.randint(
                     low=0, high=2, size=(invalid_instances.sum(), self.__num_bits))

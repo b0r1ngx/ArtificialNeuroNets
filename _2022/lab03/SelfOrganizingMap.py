@@ -10,19 +10,20 @@ class SelfOrganizingMap(nn.Module):
     https://codesachin.wordpress.com/2015/11/28/self-organizing-maps-with-googles-tensorflow/
     https://github.com/giannisnik/som
     """
-
     def __init__(self, m, n, dim, niter, alpha=None, sigma=None):
         super().__init__()
         self.m = m
         self.n = n
         self.dim = dim
         self.niter = niter
+
         if alpha is None:
-            self.alpha = 0.3
+            self.alpha = .3
         else:
             self.alpha = float(alpha)
+
         if sigma is None:
-            self.sigma = max(m, n) / 2.0
+            self.sigma = max(m, n) / 2.
         else:
             self.sigma = float(sigma)
 
@@ -44,14 +45,19 @@ class SelfOrganizingMap(nn.Module):
     def map_vects(self, input_vects):
         to_return = []
         for vect in input_vects:
-            min_index = min([i for i in range(len(self.weights))],
-                            key=lambda x: np.linalg.norm(vect - self.weights[x]))
+            min_index = min(
+                [i for i in range(len(self.weights))],
+                key=lambda x: np.linalg.norm(vect - self.weights[x])
+            )
             to_return.append(self.locations[min_index])
 
         return to_return
 
     def forward(self, x, it):
-        dists = self.pdist(torch.stack([x for i in range(self.m * self.n)]), self.weights)
+        dists = self.pdist(
+            torch.stack([x for i in range(self.m * self.n)]),
+            self.weights
+        )
         _, bmu_index = torch.min(dists, 0)
         bmu_loc = self.locations[bmu_index, :]
         bmu_loc = bmu_loc.squeeze()
@@ -61,14 +67,28 @@ class SelfOrganizingMap(nn.Module):
         sigma_op = self.sigma * learning_rate_op
 
         bmu_distance_squares = torch.sum(
-            torch.pow(self.locations.float() - torch.stack([bmu_loc for i in range(self.m * self.n)]).float(), 2), 1)
+            torch.pow(
+                self.locations.float()
+                - torch.stack(
+                    [bmu_loc for _ in range(self.m * self.n)]
+                ).float(),
+                2),
+            1
+        )
 
-        neighbourhood_func = torch.exp(torch.neg(torch.div(bmu_distance_squares, sigma_op ** 2)))
+        neighbourhood_func = torch.exp(
+            torch.neg(
+                torch.div(bmu_distance_squares, sigma_op ** 2)
+            )
+        )
 
         learning_rate_op = alpha_op * neighbourhood_func
-
         learning_rate_multiplier = torch.stack(
             [learning_rate_op[i:i + 1].repeat(self.dim) for i in range(self.m * self.n)])
-        delta = torch.mul(learning_rate_multiplier, (torch.stack([x for i in range(self.m * self.n)]) - self.weights))
+        delta = torch.mul(
+            learning_rate_multiplier,
+            (torch.stack([x for _ in range(self.m * self.n)])
+             - self.weights)
+        )
         new_weights = torch.add(self.weights, delta)
         self.weights = new_weights
