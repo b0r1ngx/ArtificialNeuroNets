@@ -31,7 +31,7 @@ class HopfieldNetwork:
 
         self.weights = weights
 
-    def predict(self, data, iterations_limit=100, bias=0, sync=True):
+    def predict(self, data, iterations_limit=20, bias=0, sync=True):
         data = np.array(data)
 
         self.iterations_limit = iterations_limit
@@ -102,6 +102,6 @@ class HopfieldNetwork:
         plt.figure(figsize=(6, 5))
         w_mat = plt.imshow(self.weights, cmap=cm.coolwarm)
         plt.colorbar(w_mat)
-        plt.title("Network Weights")
+        plt.title(f'Network weights (neurons = {self.neurons})')
         plt.tight_layout()
         plt.show()

@@ -7,28 +7,30 @@ from _2022.utils import prepare_data, flat_data_between_minus_one_and_one, \
     randomly_invert_part_of_data, differences_between_iterable
 
 # Generate Data
-n = 5000
+n = 500000
 data = generate_model_data_with_plt(n=n + 1)
+print("AR(2)-model size:", len(data))
 
+# Initial values to start NN
 modes = [True, False]  # sync, async
-observation_window_sizes = [250]  # [50, 250, 500]
+observation_window_sizes = [2500]
 neurons_of_network = observation_window_sizes
-invert_parts = [.3]  # , .75, .90
-storage_capacities = []  # 2, 5, 10, 35, 50, 100
+invert_parts = [0.5]
+storage_capacities = []
 
 for window_size in observation_window_sizes:
     storage_capacities.append(int(n / window_size))
-
-print("AR(2)-model size:", len(data))
+# storage_capacities = [100, 40, 25, 10, 5]
 
 datas = []
 for window in observation_window_sizes:
     for storage_capacity in storage_capacities:
-        datas.append(
-            flat_data_between_minus_one_and_one(
-                data, window, storage_capacity
+        if (n / window) >= storage_capacity:
+            datas.append(
+                flat_data_between_minus_one_and_one(
+                    data, window, storage_capacity
+                )
             )
-        )
 
 results = {}
 for part in invert_parts:
@@ -45,14 +47,11 @@ def plot_data(data):
         plt.show()
 
 
-hopfield_nn = HopfieldNetwork()
-
-
 def determine_recognised_as(c, p):
     for i in range(len(c)):
         correct_window = c[i]
         if differences_between_iterable(correct_window, p) == 0:
-            return i
+            return i + 1
     return None
 
 
@@ -63,17 +62,20 @@ def plot_correct_n_predictions(c, p):
         if error > 0:
             errors += error
             recognised_as = determine_recognised_as(c, p[i][0])
-            plt.title(
-                f'{i + 1} window (original to predict), diffs={error}, recognised as: {recognised_as}-window')
-            plt.plot(c[i])
-            plt.plot(p[i][0])
-            plt.show()
+            if recognised_as:
+                title = f'{i + 1} window (original to predict), ' \
+                        f'diffs={error}, recognised as: {recognised_as}-window'
+                print(title)
+                plt.title(title)
+                plt.plot(c[i])
+                plt.plot(p[i][0])
+                plt.show()
 
     return errors
 
 
 for data in datas:
-    plot_data(data)
+    hopfield_nn = HopfieldNetwork()
     hopfield_nn.train_weights(data['flatten'])
     hopfield_nn.plot_weights()
 
@@ -97,6 +99,9 @@ for data in datas:
                 'storage_capacity_limit': data['storage_capacity_limit'],
                 'error': errors,
             })
+
+# for data in datas:
+#     plot_data(data)
 
 for part in invert_parts:
     table = PrettyTable()
