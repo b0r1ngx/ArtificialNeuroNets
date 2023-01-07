@@ -7,15 +7,15 @@ from _2022.utils import prepare_data, flat_data_between_minus_one_and_one, \
     randomly_invert_part_of_data, differences_between_iterable
 
 # Generate Data
-n = 500000
+n = 10000
 data = generate_model_data_with_plt(n=n + 1)
 print("AR(2)-model size:", len(data))
 
 # Initial values to start NN
 modes = [True, False]  # sync, async
-observation_window_sizes = [2500]
+observation_window_sizes = [200, 500, 1000]
 neurons_of_network = observation_window_sizes
-invert_parts = [0.5]
+invert_parts = [.5]  # 0, .03, .12, .33, .5, .8, .98
 storage_capacities = []
 
 for window_size in observation_window_sizes:
