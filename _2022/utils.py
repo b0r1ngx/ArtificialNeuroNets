@@ -1,3 +1,4 @@
+from numpy import array
 from torch import tensor
 from random import randrange
 
@@ -29,48 +30,53 @@ def train_test_split(data: list, train=0.8, test=0.2):
 
 
 # For Hopfield-based networks:
-def flat_data_between_minus_one_and_one(data, window, memory_capacity):
+def flat_data_between_minus_one_and_one(data, window, storage_capacity):
     """ Rule of transformation is:
         data = [0, 5, 3, 1]
         flat = [1, -1, -1]
     """
+    skip = 1
+    work_with_data = skip + window * storage_capacity
+    if work_with_data > len(data):
+        work_with_data = len(data)
+
     flat = []
-    for i in range(1, len(data)):
+    for i in range(skip, work_with_data):
         if data[i] > data[i - 1]:
             flat.append(1)
         else:
             flat.append(-1)
 
-    autoregression_source = data[1:]
-    original = [autoregression_source[window * i:window * (i + 1)]
-                for i in range(len(autoregression_source) // window)]
-    flatten = [flat[window * i:window * (i + 1)]
-                for i in range(len(flat) // window)]
+    data = data[skip:work_with_data]
+    original = [array(data[window * i:window * (i + 1)])
+                for i in range(window)]
+    flatten = [array(flat[window * i:window * (i + 1)])
+               for i in range(window)]
 
     return {
         'window': window,
-        'memory_capacity': memory_capacity,
-        'original': original[:memory_capacity],
-        'flatten': flatten[:memory_capacity]
+        'storage_capacity': storage_capacity,
+        'storage_capacity_limit': int(0.14 * window),
+        'original': array(original[:storage_capacity]),
+        'flatten': array(flatten[:storage_capacity])
     }
 
 
-def randomly_invert_part_of_data(data, part=0.5):
+def randomly_invert_part_of_data(data, part_to_invert=0.5):
     data = data.copy()
-    for i in range(int(len(data) * part)):
+    for i in range(int(len(data) * part_to_invert)):
         data[randrange(0, len(data))] *= -1
     return data
 
 
-def get_amount_of_difference_between_iterable(a, b):
+def differences_between_iterable(a, b):
     assert len(a) == len(b), \
         f'arrays sizes not equal: {len(a)} != {len(b)}'
-
-    difference = 0
+    differences = 0
     for i in range(len(a)):
         if a[i] != b[i]:
-            difference += 1
-    return difference
+            differences += 1
+    return differences
 
 
 def normalize_data_between_a_b(data, min, max, a=-1, b=1) -> list[float]:

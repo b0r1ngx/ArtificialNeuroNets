@@ -1,9 +1,12 @@
+import random
+
 import numpy as np
 from matplotlib import cm, pyplot as plt
 
 
 class HopfieldNetwork:
-    """https://github.com/takyamamoto/Hopfield-Network"""
+    """Source: https://github.com/takyamamoto/Hopfield-Network,
+        but changed a bit"""
 
     def train_weights(self, train_data):
         print("Start to train weights...")
@@ -28,7 +31,7 @@ class HopfieldNetwork:
 
         self.weights = weights
 
-    def predict(self, data, iterations_limit=20, bias=0, sync=True):
+    def predict(self, data, iterations_limit=100, bias=0, sync=True):
         data = np.array(data)
 
         self.iterations_limit = iterations_limit
@@ -61,28 +64,35 @@ class HopfieldNetwork:
                 # Compute new state energy
                 new_energy = self.energy(state)
                 if energy == new_energy:
+                    print(f'NN(sync) - stable state reached in {i + 1} cycles')
                     return state
 
                 energy = new_energy
 
+            print('NN(sync) - stable state not reached')
             return state
         else:
             state = start_state
             energy = self.energy(state)
 
             for i in range(self.iterations_limit):
-                for j in range(100):
-                    # Select random neuron
-                    idx = np.random.randint(0, self.neurons)
+                indexes = list(range(self.neurons))
+                for j in range(self.neurons):
+                    # Select random neuron idx = np.random.randint(0, self.neurons)
+                    # Instead of just visit every time a random neurons, we visit it all, but still in random order
+                    idx = random.choice(indexes)
+                    indexes.remove(idx)
                     # Update state
                     state[idx] = np.sign(self.weights[idx].T @ state - self.bias)
 
                 new_energy = self.energy(state)
                 if energy == new_energy:
+                    print(f'NN(async) - stable state reached in {i + 1} cycles')
                     return state
 
                 energy = new_energy
 
+            print('NN(async) - stable state not reached')
             return state
 
     def energy(self, state):
