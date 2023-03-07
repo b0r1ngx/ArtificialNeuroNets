@@ -33,4 +33,5 @@ def generate_model_data_with_plt(
     plt.show()
     return array(data)
 
+
 # generate_model_data_with_plt()

@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 from _2022.lab03.SelfOrganizingMap import SelfOrganizingMap
 
-m = 30
-n = 30
+m = 25
+n = 25
 
 # Training inputs for RGB colours (Total: 15 colours)
 colors = np.array(
@@ -24,6 +24,7 @@ colors = np.array(
      [.33, .33, .33],
      [.5, .5, .5],
      [.66, .66, .66]])
+
 color_names = ['black', 'blue', 'darkblue', 'skyblue',
                'greyblue', 'lilac', 'green', 'red',
                'cyan', 'violet', 'yellow', 'white',
@@ -35,7 +36,7 @@ for i in range(colors.shape[0]):
 
 # Train an m*n SOM with 100 iterations
 n_iter = 100
-som = SelfOrganizingMap(m, n, 3, n_iter)
+som = SelfOrganizingMap(m, n, len(colors[0]), n_iter)
 for iter_no in range(n_iter):
     # Train with each vector one by one
     for i in range(len(data)):
@@ -50,6 +51,7 @@ for i, loc in enumerate(locations):
 
 # Get output grid
 image_grid = centroid_grid
+print(image_grid)
 
 # Map colours to their closest neurons
 mapped = som.map_vects(torch.Tensor(colors))

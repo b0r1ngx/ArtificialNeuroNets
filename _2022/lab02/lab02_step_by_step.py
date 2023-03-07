@@ -100,8 +100,8 @@ for data in datas:
                 'error': errors,
             })
 
-# for data in datas:
-#     plot_data(data)
+for data in datas:
+    plot_data(data)
 
 for part in invert_parts:
     table = PrettyTable()
